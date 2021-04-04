@@ -1,3 +1,9 @@
 node_modules
 package-lock.json
 bundle.js
+
+/images
+*.png
+
+s3_upload.js
+.env
