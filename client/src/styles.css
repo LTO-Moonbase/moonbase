@@ -80,6 +80,7 @@ h3 {
 P {
     margin: 0;
     font-size: 1.3rem;
+    color: black;
 }
 
 @media screen and (min-width: 768px) {
@@ -614,6 +615,7 @@ color: #fff;
 .rates__text {
   padding: 2vw;
   margin: 0 2vw;
+  color: var(--color-body);
 }
 
 @media screen and (min-width: 768px) { 
@@ -658,7 +660,7 @@ color: #fff;
 
 /* Stats */
 .stats {
-  padding-top: 5vw;
+  padding: 5vw 0;
 }
 
 .graph__container {
@@ -769,12 +771,46 @@ color: #fff;
 
 /* Security */
 .security {
-  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 5vw 0;
+}
+
+.security .security__header {
+  text-align: center;
+  padding-bottom: 1vw;
+}
+
+.security .card {
+  margin: 3vw;
+}
+
+.security .card__header {
+  font-size: 2rem;
+}
+
+.security__text {
+  padding: 2vw;
+  margin: 0 2vw;
+}
+
+@media screen and (min-width: 768px) { 
+  .security__text {
+    padding: 1vw;
+    margin: 0;
+  }
 }
 
 /* About */
 .about {
+  display: flex;
+  justify-content: center;
   background-color: black;
+  padding: 5vw 0;
+}
+
+.about .card {
+  margin: 2vw 2vw;
 }
 
 .about__header {
@@ -786,6 +822,11 @@ color: #fff;
   padding: 3vw;
   text-align: left;
   text-indent: 2rem;
+}
+
+.mission>p {
+  color: var(--color-body);
+  padding: 0 1vw;
 }
 
 .member {
@@ -808,7 +849,6 @@ color: #fff;
 .about__member-info {
   color: var(--color-headings);
   padding: 3vw;
-  font-size: 1rem;
 }
 
 .about__member-name {
@@ -850,7 +890,7 @@ color: #fff;
   
   .about__member-info {
     padding: 1vw;
-    font-size: 1.15rem;
+    font-size: 1.7rem;
   }
   
   .about__member {
@@ -860,6 +900,23 @@ color: #fff;
 
   .about__left .about__member {
     flex-direction: row;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .about {
+    display: flex;
+    justify-content: center;
+  }
+
+  .about .card {
+    margin: 1vw;
+    font-size: 2rem;
+  }
+
+  .about__member-info {
+    padding: 1vw 1vw 0;
+    font-size: 1.2rem;
   }
 }
 

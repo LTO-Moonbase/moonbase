@@ -25,10 +25,10 @@ function App() {
             <section className="lto-price" id="LTOPrice">
                 <LTOPrice />
             </section>
-            <section className="security stats" id="security">
+            <section className="security" id="security">
                 <Security />
             </section>
-            <section className="about stats" id="about">
+            <section className="about" id="about">
                 <About />
             </section>
             <section className="social" id="social">
