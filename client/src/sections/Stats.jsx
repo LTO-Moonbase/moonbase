@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useReducer } from "react";
-import getBlockData from "../_getBlockData";
-import getNodeData from "../_getNodeData";
+import React, { useEffect, useReducer } from "react";
+import getNodeData from "../apiRequests/_getNodeData";
 import { Bar, Line, defaults } from "react-chartjs-2";
+
+import filterBlocksEarned from "../helper/filterBlocksEarned.jsx";
 
 export default function Stats() {
   const ACTIONS = {
@@ -10,9 +11,14 @@ export default function Stats() {
     SET_CURRENT_WEEK_DAY: "set-week-day",
     SET_WEEK_START: "set-week-start",
     SET_WEEK_END: "set-week-end",
-    SET_BAR_DATA_BOOL: "set-bar-bool",
-    SET_WEEK_BLOCKS_CHART: "set-week-blocks-chart",
+    SET_CHART_DATA_BOOL: "set-chart-bool",
+    SET_WEEK_CHARTS: "set-week-charts",
+
     SET_WEEK_BLOCKS_TOTAL: "set-week-blocks-total",
+    SET_WEEK_TXS_TOTAL: "set-week-txs-total",
+    SET_WEEK_FEES_TOTAL: "set-week-fees-total",
+
+    SET_WEEK_TOTALS: "set-week-totals"
   };
 
   function reducer(state, action) {
@@ -27,12 +33,31 @@ export default function Stats() {
         return { ...state, weekStart: action.payload.weekStart };
       case ACTIONS.SET_WEEK_END:
         return { ...state, weekEnd: action.payload.weekEnd };
-      case ACTIONS.SET_BAR_DATA_BOOL:
-        return { ...state, barDataBool: action.payload.barDataBool };
-      case ACTIONS.SET_WEEK_BLOCKS_CHART:
-        return { ...state, weekBlocksChart: action.payload.weekBlocksChart };
-      case ACTIONS.SET_WEEK_BLOCKS_TOTAL:
-        return { ...state, weekBlocksTotal: action.payload.weekBlocksTotal };
+      case ACTIONS.SET_CHART_DATA_BOOL:
+        return { ...state, chartDataBool: action.payload.chartDataBool };
+      case ACTIONS.SET_WEEK_CHARTS:
+        return {
+          ...state,
+          weekBlocksChart: action.payload.weekBlocksChart,
+          weekTxsChart: action.payload.weekTxsChart,
+        };
+
+      case ACTIONS.SET_WEEK_TOTALS: 
+        return {
+          ...state,
+          weekBlocksTotal: action.payload.weekBlocksTotal,
+          weekTxsTotal: action.payload.weekTxsTotal,
+          weekFeesTotal: action.payload.weekFeesTotal,
+        }
+      
+      case ACTIONS.SET_CURRENT_TOTALS: 
+        return {
+          ...state,
+          currentBlocksTotal: action.payload.currentBlocksTotal,
+          currentTxsTotal: action.payload.currentTxsTotal,
+          currentFeesTotal: action.payload.currentFeesTotal,
+        }
+
       default:
         return state;
     }
@@ -40,27 +65,24 @@ export default function Stats() {
 
   const [state, dispatch] = useReducer(reducer, {
     nodeData: null,
-    blockData: null,
     currentWeekDay: null,
     weekStart: new Date(),
     weekEnd: new Date(),
-    barDataBool: false,
+    chartDataBool: false,
     weekBlocksChart: blocksChart,
+    weekTxsChart: lineChart,
+
     weekBlocksTotal: 0,
+    weekTxsTotal: 0,
+    weekFeesTotal: 0,
+    
+    currentBlocksTotal: 0,
+    currentTxsTotal: 0,
+    currentFeesTotal: 0,
   });
 
   useEffect(() => {
     let mounted = true;
-    getBlockData()
-      .then((data) => {
-        dispatch({
-          type: ACTIONS.SET_BLOCK_DATA,
-          payload: { blockData: data },
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
     getNodeData()
       .then((data) => {
         dispatch({
@@ -68,8 +90,8 @@ export default function Stats() {
           payload: { nodeData: data[0].slice(790) },
         });
         dispatch({
-          type: ACTIONS.SET_BAR_DATA_BOOL,
-          payload: { barDataBool: true },
+          type: ACTIONS.SET_CHART_DATA_BOOL,
+          payload: { chartDataBool: true },
         });
       })
       .catch(function (error) {
@@ -98,23 +120,22 @@ export default function Stats() {
           <figure className="graph__container">{state.weekBlocksChart}</figure>
         </article>
         <article className="stats__block-graph">
-          <figure className="graph__container">
-            <img
-              className="graph"
-              src="https://moonbase-demo.s3.amazonaws.com/nodeperformance.png"
-              alt=""
-            />
-          </figure>
+          <figure className="graph__container">{state.weekTxsChart}</figure>
         </article>
         <aside className="stats__info-A">
           <div className="card card--primary">
             <header className="card__header">Blocks Earned</header>
             <p className="stats__text">
-              Week of {state.weekStart.getMonth() + 1}/
-              {state.weekStart.getDate()} - {state.weekEnd.getMonth() + 1}/
-              {state.weekEnd.getDate()}
+              Week of {state.weekStart.getUTCMonth() + 1}/
+              {state.weekStart.getUTCDate()} - {state.weekEnd.getUTCMonth() + 1}/
+              {state.weekEnd.getUTCDate()}
               <br></br>
-              LTO Moonbase minted {state.weekBlocksTotal} blocks on the LTO Blockchain
+              LTO Moonbase minted{" "}
+              <span className="stats__total">{state.weekBlocksTotal}</span>{" "}
+              blocks on the LTO Blockchain.
+              <br></br>
+              <br></br>
+              So far <span className="stats__total">{state.currentBlocksTotal}</span> blocks were minted this week.
             </p>
           </div>
         </aside>
@@ -122,11 +143,18 @@ export default function Stats() {
           <div className="card card--primary">
             <header className="card__header">Verified Transactions</header>
             <p className="stats__text">
-              Week of {state.weekStart.getMonth() + 1}/
-              {state.weekStart.getDate()} - {state.weekEnd.getMonth() + 1}/
-              {state.weekEnd.getDate()}
+              Week of {state.weekStart.getUTCMonth() + 1}/
+              {state.weekStart.getUTCDate()} - {state.weekEnd.getUTCMonth() + 1}/
+              {state.weekEnd.getUTCDate()}
               <br></br>
-              LTO Moonbase verified 2165 transactions on the LTO Blockchain
+              LTO Moonbase verified{" "}
+              <span className="stats__total">
+                {Math.floor(state.weekTxsTotal)}
+              </span>{" "}
+              transactions on the LTO Blockchain.
+              <br></br>
+              <br></br>
+              So far <span className="stats__total">{state.currentTxsTotal}</span> transactions were varified this week.
             </p>
           </div>
         </aside>
@@ -134,112 +162,24 @@ export default function Stats() {
           <div className="card card--primary">
             <header className="card__header">LTO Earned</header>
             <p className="stats__text">
-              Week of {state.weekStart.getMonth() + 1}/
-              {state.weekStart.getDate()} - {state.weekEnd.getMonth() + 1}/
-              {state.weekEnd.getDate()}
+              Week of {state.weekStart.getUTCMonth() + 1}/
+              {state.weekStart.getUTCDate()} - {state.weekEnd.getUTCMonth() + 1}/
+              {state.weekEnd.getUTCDate()}
               <br></br>
-              LTO Moonbase earned 503 LTO in transactions for its leasers
+              LTO Moonbase earned{" "}
+              <span className="stats__total">
+                {Math.floor(state.weekFeesTotal)}
+              </span>{" "}
+              LTO in transactions for its leasers.
+              <br></br>
+              <br></br>
+              So far <span className="stats__total">{Math.floor(state.currentFeesTotal)}</span> LTO was earned this week.
             </p>
           </div>
         </aside>
       </div>
     </div>
   );
-}
-
-function filterBlocksEarned(state, dispatch, ACTIONS) {
-  let blocksEarned = [];
-  let timeZoneDif = 14400000;
-  if (state.barDataBool) {
-    const currentWeekDay = new Date(
-      Date.parse(state.nodeData[state.nodeData.length - 1].date) + timeZoneDif
-    ).getDay();
-
-    dispatch({
-      type: ACTIONS.SET_CURRENT_WEEK_DAY,
-      payload: {
-        currentWeekDay: currentWeekDay,
-      },
-    });
-
-    let weekEnd = Date.now() - 86400000 * (currentWeekDay + 1);
-    const weekStart = new Date(weekEnd - 518400000);
-    weekEnd = new Date(weekEnd);
-    dispatch({
-      type: ACTIONS.SET_WEEK_END,
-      payload: {
-        weekEnd: weekEnd,
-      },
-    });
-
-    dispatch({
-      type: ACTIONS.SET_WEEK_START,
-      payload: {
-        weekStart: weekStart,
-      },
-    });
-
-    let sunNodeData = state.nodeData.length - (currentWeekDay + 8);
-    let weekBlocksTotal = 0
-    for (let i = sunNodeData; blocksEarned.length < 7; i++) {
-      let blocks = state.nodeData[i].blocks;
-      blocksEarned.push(blocks);
-      weekBlocksTotal+= blocks;
-    }
-
-    dispatch({
-      type: ACTIONS.SET_WEEK_BLOCKS_TOTAL,
-      payload: {
-        weekBlocksTotal: weekBlocksTotal,
-      },
-    });
-
-    let weekNodeData = { ...state.weekBlocksChart.props.children.props.data };
-    weekNodeData.datasets[0].data = blocksEarned;
-    weekNodeData.datasets[0].label = "LTO Blocks Earned";
-
-    dispatch({
-      type: ACTIONS.SET_WEEK_BLOCKS_CHART,
-      payload: {
-        weekBlocksChart: (
-          <div className="chart">
-            <Bar
-              data={weekNodeData}
-              height={300}
-              width={500}
-              options={{
-                title: {
-                  display: true,
-                  text: `LTO Blocks Earned Week of: ${
-                    weekStart.getMonth() + 1
-                  }/${weekStart.getDate()}`,
-                  position: "bottom",
-                  fontColor: "black",
-                  fontSize: 30,
-                },
-                legendPositon: "bottom",
-                maintainAspectRatio: false,
-                scales: {
-                  yAxes: [
-                    {
-                      ticks: {
-                        beginAtZero: true,
-                      },
-                    },
-                  ],
-                },
-              }}
-            />
-          </div>
-        ),
-      },
-    });
-
-    dispatch({
-      type: ACTIONS.SET_BAR_DATA_BOOL,
-      payload: { barDataBool: false },
-    });
-  }
 }
 
 const blocksChart = (
@@ -260,10 +200,71 @@ const blocksChart = (
       options={{
         title: {
           display: true,
-          text: "LTO Earned week of",
+          text: "LTO Transactions/Fees Week of: 4/4",
+          position: "bottom",
+          fontColor: "black",
+          fontSize: 20,
         },
         legendPositon: "bottom",
         maintainAspectRatio: false,
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      }}
+    />
+  </div>
+);
+
+const lineChart = (
+  <div className="chart">
+    <Line
+      data={{
+        labels: ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
+        datasets: [
+          {
+            data: [1, 1, 1, 1, 1, 1, 1],
+            label: "Fees (LTO Earned)",
+            backgroundColor: "green",
+            fontColor: "black",
+          },
+          {
+            data: [1, 1, 1, 1, 1, 1, 1],
+            label: "Transactions",
+            backgroundColor: "#692db8",
+            fontColor: "black",
+          },
+        ],
+      }}
+      height={300}
+      width={500}
+      options={{
+        title: {
+          display: true,
+          text: "LTO Transactions/Fees Week of: 4/4",
+          position: "bottom",
+          fontColor: "black",
+          fontSize: 20,
+        },
+        legendPositon: "bottom",
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+        layout: {
+          padding: 10,
+        },
       }}
     />
   </div>
