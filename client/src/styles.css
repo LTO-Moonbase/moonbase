@@ -605,36 +605,162 @@ section.space {
   text-shadow: 2px 3px 3px rgb(160, 160, 160, 0.3);
 }
 
-section.space.top {
-  clip-path: polygon(0 0%, 100% 0%, 100% 98%, 0% 100%);
-}
-
-section.space.bottom {
-  clip-path: polygon(0 1.5%, 100% 0%, 100% 100%, 0% 100%);
-}
-
 .space .card {
   background-color: black;
   box-shadow: 0px 0px 20px -1px rgba(255, 255, 255, 0.25);
 }
 
+section.space.top {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 98%, 0% 100%);
+  padding-bottom: 10vw;
+  margin-bottom: 5vw;
+}
+
+section.space.bottom {
+  clip-path: polygon(0 0%, 40% 1%, 100% 0%, 100% 100%, 0% 100%);
+  margin-top: 5vw;
+}
+
+section.space.top.bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5vw 0;
+}
+
+section.space.top::after {
+  content: '';
+  display: block;
+  background: linear-gradient(0deg, rgba(176,212,255, 1), rgba(157,110,218, 1));
+  clip-path: polygon(100% 0%, 61% 40%, 100% 95%);
+  position: absolute;
+  width: 100%;
+  height: 3.5%;
+  top: 96.5%;
+}
+
+section.space.bottom::before {
+  content: '';
+  display: block;
+  background: linear-gradient(180deg, rgba(157,110,218, 1), rgba(176,212,255, 1));
+  clip-path: polygon(0% 2%, 39.4% 32%, 0% 50%);
+  position: absolute;
+  width: 100%;
+  height: 3.3%;
+  top: 0%;
+  z-index: 1;
+}
+
+section.space.top.bottom::after {
+  content: '';
+  display: block;
+  background: linear-gradient(0deg, rgba(176,212,255, 1), rgba(157,110,218, 1));
+  clip-path: polygon(100% 0%, 60.5% 36%, 100% 97%);
+  position: absolute;
+  width: 100%;
+  height: 6.5%;
+  top: 93.5%;
+}
+
+section.space.top.bottom::before {
+  content: '';
+  display: block;
+  background: linear-gradient(180deg, rgba(157,110,218, 1), rgba(176,212,255, 1));
+  clip-path: polygon(0% 2%, 39.5% 62%, 0% 97%);
+  position: absolute;
+  width: 100%;
+  height: 6.5%;
+  top: 0%;
+  z-index: 1;
+}
+
+section.space.top.bottom {
+  clip-path: polygon(0 0%, 40% 4%, 100% 0%, 100% 100%, 60% 96%, 0% 100%);
+}
+
 @media screen and (min-width: 768px) {
   section.space.top {
-    clip-path: polygon(0 0%, 100% 0%, 100% 97%, 0% 100%);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 96%, 0% 100%);
+  }
+
+  section.space.top::after {
+    content: '';
+    display: block;
+    background: linear-gradient(0deg, rgba(176,212,255, 1), rgba(157,110,218, 1));
+    clip-path: polygon(100% 0%, 60.5% 36%, 100% 97%);
+    position: absolute;
+    width: 100%;
+    height: 6.5%;
+    top: 93.5%;
   }
   
   section.space.bottom {
-    clip-path: polygon(0 2.5%, 100% 0%, 100% 100%, 0% 100%);
+    clip-path: polygon(0 0%, 40% 2%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  
+  section.space.bottom::before {
+    content: '';
+    display: block;
+    background: linear-gradient(180deg, rgba(157,110,218, 1), rgba(176,212,255, 1));
+    clip-path: polygon(0% 2%, 39.5% 32%, 0% 50%);
+    position: absolute;
+    width: 100%;
+    height: 6.5%;
+    top: 0%;
+    z-index: 1;
+  }
+
+  section.space.top.bottom::before {
+    content: '';
+    display: block;
+    background: linear-gradient(180deg, rgba(157,110,218, 1), rgba(176,212,255, 1));
+    clip-path: polygon(0% 2%, 39.5% 62%, 0% 97%);
+    position: absolute;
+    width: 100%;
+    height: 6.5%;
+    top: 0%;
+    z-index: 1;
+  }
+
+  section.space.top.bottom {
+    clip-path: polygon(0 0%, 40% 4%, 100% 0%, 100% 100%, 60% 96%, 0% 100%);
   }
 }
 
 @media screen and (min-width: 1024px) {
   section.space.top {
-    clip-path: polygon(0 0%, 100% 0%, 100% 95%, 0% 100%);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 94%, 0% 100%);
+  }
+
+  section.space.top::after, section.space.top.bottom::after  {
+    content: '';
+    display: block;
+    background: linear-gradient(0deg, rgba(176,212,255, 1), rgba(157,110,218, 1));
+    clip-path: polygon(100% 0%, 60.5% 39%, 100% 98%);
+    position: absolute;
+    width: 100%;
+    height: 10%;
+    top: 90%;
   }
   
   section.space.bottom {
-    clip-path: polygon(0 5%, 100% 0%, 100% 100%, 0% 100%);
+    clip-path: polygon(0 0%, 40% 6%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  section.space.bottom::before, section.space.top.bottom::before {
+    content: '';
+    display: block;
+    background: linear-gradient(180deg, rgba(157,110,218, 1), rgba(176,212,255, 1));
+    clip-path: polygon(0% 2%, 39.5% 61%, 0% 98%);
+    position: absolute;
+    width: 100%;
+    height: 10%;
+    top: 0%;
+    z-index: 1;
+  }
+
+  section.space.top.bottom {
+    clip-path: polygon(0 0%, 40% 6%, 100% 0%, 100% 100%, 60% 94%, 0% 100%);
   }
 }
 
@@ -829,17 +955,17 @@ section.space.bottom {
 /* LTOPrice */
 .lto-price {
   position: relative;
-  height: 55vw;
+  height: 60vw;
+  max-height: 800px;
   margin-top: 5vw;
 }
 
-.section__image.lto-price__image {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  clip-path: inset(1% 20% 3% 23% round 100%);
+.eclipse {
+  position: relative;
+  max-width: 750px;
+  max-height: 750px;
+  width: 55vw;
+  height: 55vw;
   z-index: 1;
 }
 
