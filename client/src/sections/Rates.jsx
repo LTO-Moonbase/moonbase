@@ -1,6 +1,30 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 export default function Rates() {
+
+  useEffect(() => {
+    const containers = document.querySelectorAll('.rates');
+
+    const selectorsOptions = {
+        rootMargin: '0px 0px -400px 0px',
+        threshold: 0
+    }
+    const appearOnScroll = new IntersectionObserver( (selectors, appearOnScroll) => {
+        selectors.forEach( selector => {
+            
+            if (selector.isIntersecting) {
+                selector.target.classList.add('appear');
+                appearOnScroll.unobserve(selector.target);
+            }
+            return
+        })
+    }, selectorsOptions);
+
+    containers.forEach(container => {
+        appearOnScroll.observe(container);
+    })
+}, [])
+
   return (
     <div className="section__container">
       <picture>

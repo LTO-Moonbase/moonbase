@@ -14,8 +14,8 @@ export default function filterBlocksEarned(state, dispatch, ACTIONS) {
         currentWeekDay: currentWeekDayUTC,
       },
     });
-
-    let weekEnd = Date.now() - 86400000 * (currentWeekDayUTC + 1);
+    
+    let weekEnd = Date.now() - 86400000 * (currentWeekDayUTC + 1 + (7 * state.weekPage));
     const weekStart = new Date(weekEnd - 518400000);
     weekEnd = new Date(weekEnd);
     dispatch({
@@ -32,7 +32,12 @@ export default function filterBlocksEarned(state, dispatch, ACTIONS) {
       },
     });
 
-    let sunNodeData = state.nodeData.length - (currentWeekDayUTC + 8);
+    let addMissingDay = 0;
+    if (new Date(Date.now()).getUTCDate() !== new Date(state.nodeData[state.nodeData.length - 1].date).getUTCDate()) {
+      addMissingDay = 1;
+    }
+
+    let sunNodeData = state.nodeData.length - (currentWeekDayUTC + (8 - addMissingDay) + (7 * state.weekPage));
     let weekBlocksTotal = 0;
     let weekTxsTotal = 0;
     let weekFeesTotal = 0;
@@ -103,9 +108,7 @@ export default function filterBlocksEarned(state, dispatch, ACTIONS) {
               options={{
                 title: {
                   display: true,
-                  text: `LTO Blocks Earned Week of: ${
-                    weekStart.getMonth() + 1
-                  }/${weekStart.getUTCDate()}`,
+                  text: 'LTO Blocks Earned',
                   position: "bottom",
                   fontColor: "black",
                   fontSize: 30,
@@ -134,9 +137,7 @@ export default function filterBlocksEarned(state, dispatch, ACTIONS) {
               options={{
                 title: {
                   display: true,
-                  text: `LTO Transactions & Fees Week of: ${
-                    weekStart.getMonth() + 1
-                  }/${weekStart.getUTCDate()}`,
+                  text: 'LTO Transactions & Fees',
                   position: "bottom",
                   fontColor: "black",
                   fontSize: 30,
